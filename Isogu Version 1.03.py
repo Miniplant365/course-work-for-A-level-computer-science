@@ -22,7 +22,7 @@ player_rect = player_surf.get_rect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
 
 # Initialize score variables
 score = 0
-score_update_time = pygame.time.get_ticks()
+score_update_time = pygame.time.get_ticks()#
 
 # Font settings for score display
 font = pygame.font.Font("freesansbold.ttf", 10)
