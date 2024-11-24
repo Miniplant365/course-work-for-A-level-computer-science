@@ -10,7 +10,11 @@ screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption("Isogu")
 clock = pygame.time.Clock()
 
+#defining the live system
+lives = 3
+
 # Load images
+lives_surface = pygame.image.load('pygame/Graphics/player.png').convert_alpha()
 xp_surface = pygame.image.load('pygame/Graphics/xp.png').convert_alpha()
 background_surface = pygame.image.load('pygame/Graphics/background.png').convert()
 enemy_surface = pygame.image.load('pygame/Graphics/enemy1.png').convert_alpha()
@@ -79,18 +83,33 @@ while True:
             pygame.quit()
             exit()
     
-    if player_rect.colliderect(enemy_rect):
-        score += 100
+    #here we are coding the collisions betwen the player and projectiles
+    if player_rect.colliderect(E1.rect) or player_rect.colliderect(E2.rect):
+        lives = lives - 1
+        player_rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)  # Reset player position
+        pygame.time.delay(500)  # Brief pause after losing a life
+        
 
     # Update score every second
     if pygame.time.get_ticks() - score_update_time >= 1000:
         score += 1
         score_update_time = pygame.time.get_ticks()
 
-    # Display background and other sprites
+    # Display background and other sprites such as lives
     screen.blit(background_surface, (0, 0))
     screen.blit(xp_surface, (-10, -20))
     
+    if lives == 3:
+        screen.blit(lives_surface, (80, 20))
+        screen.blit(lives_surface, (100, 20))
+        screen.blit(lives_surface, (120, 20))
+    elif lives == 2:
+        screen.blit(lives_surface, (80, 20))
+        screen.blit(lives_surface, (100, 20))
+    elif lives == 1:
+        screen.blit(lives_surface, (80, 20))
+
+
     # Basic idle movement for the boss
     enemy_rect.y -= 2
     if enemy_rect.bottom <= 0: enemy_rect.top = WINDOW_HEIGHT
