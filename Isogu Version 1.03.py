@@ -16,7 +16,7 @@ lives = 3
 # Load images
 lives_surface = pygame.image.load('pygame/Graphics/player.png').convert_alpha()
 xp_surface = pygame.image.load('pygame/Graphics/xp.png').convert_alpha()
-background_surface = pygame.image.load('pygame/Graphics/background.png').convert()
+background_surface = pygame.image.load('pygame/Graphics/background2.png').convert()
 enemy_surface = pygame.image.load('pygame/Graphics/enemy1.png').convert_alpha()
 player_surf = pygame.image.load('pygame/Graphics/player.png').convert_alpha()
 
