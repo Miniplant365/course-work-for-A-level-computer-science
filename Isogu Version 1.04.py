@@ -28,16 +28,7 @@ player_surf = pygame.image.load('pygame/Graphics/player.png').convert_alpha()
 play_button = pygame.image.load('pygame/Graphics/play_button.png').convert_alpha()
 quit_button = pygame.image.load('pygame/Graphics/quit_button.png').convert_alpha()
 leaderboard_button = pygame.image.load('pygame/Graphics/leaderboard.png').convert_alpha()
-
-# Load frames of the animated background
-background_frames = [
-    pygame.image.load(f'pygame/Graphics/menu_background{i}.png').convert()
-    for i in range(1, 10)    ]
-
-# Animation variables
-current_frame = 0
-frame_timer = 0  # Keeps track of the time since the last frame change
-frame_duration = 100  # Duration of each frame in milliseconds
+menu_backgroundsurface = pygame.image.load('pygame/Graphics/menu_background1.png').convert_alpha()
 
 
 # Set initial positions for sprites
@@ -100,7 +91,7 @@ def display_score(x, y):
 
 #draws the menu aswell as displaying the buttons
 def draw_menu():
-    screen.blit(background_frames[current_frame], (0, 0))
+    screen.blit(menu_backgroundsurface, (0, 0))
     screen.blit(play_button, play_button_rect)
     screen.blit(quit_button, quit_button_rect)
     screen.blit(leaderboard_button, leaderboard_button_rect)
@@ -152,12 +143,6 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-
-# Update the frame based on the timer
-    frame_timer += clock.get_time()
-    if frame_timer >= frame_duration:
-        frame_timer = 0
-        current_frame = (current_frame + 1) % len(background_frames)  # Loop through frames
 
     # checking if any of the buttons have been pressed
     if main_menu and event.type == pygame.MOUSEBUTTONDOWN:
