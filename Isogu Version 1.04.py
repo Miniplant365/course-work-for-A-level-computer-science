@@ -10,14 +10,18 @@ screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption("Isogu")
 clock = pygame.time.Clock()
 
+wave = random.randint(1,3)
+
+  
 #defining the live system
 lives = 3
 
 #defining whether the menu should be displayed
 main_menu = True
 
-#setting up an alternate window for the leaderboard
-leaderboardwindow = False
+#creating a state for the leaderboard to be in allowing for it to be permanant
+leaderboard = False
+
 
 # Load images
 lives_surface = pygame.image.load('pygame/Graphics/player.png').convert_alpha()
@@ -29,7 +33,7 @@ play_button = pygame.image.load('pygame/Graphics/play_button.png').convert_alpha
 quit_button = pygame.image.load('pygame/Graphics/quit_button.png').convert_alpha()
 leaderboard_button = pygame.image.load('pygame/Graphics/leaderboard.png').convert_alpha()
 menu_backgroundsurface = pygame.image.load('pygame/Graphics/menu_background1.png').convert_alpha()
-
+Leaderboard_menu = pygame.image.load('pygame/Graphics/Leaderboard_1.png').convert_alpha()
 
 # Set initial positions for sprites
 enemy_rect = enemy_surface.get_rect(midright=(WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -51,11 +55,14 @@ class player():
     #player movement
     def movement(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]: player_rect.y -= 2
-        if keys[pygame.K_s]: player_rect.y += 2
-        if keys[pygame.K_d]: player_rect.x += 2
-        if keys[pygame.K_a]: player_rect.x -= 2
-    
+        if keys[pygame.K_w] and player_rect.top > 0:
+            player_rect.y -= 2
+        if keys[pygame.K_s] and player_rect.bottom < WINDOW_HEIGHT:
+            player_rect.y += 2
+        if keys[pygame.K_d] and player_rect.right < WINDOW_WIDTH:
+            player_rect.x += 2
+        if keys[pygame.K_a] and player_rect.left > 0:
+            player_rect.x -= 2
 
 P1 = player()
 
@@ -118,23 +125,43 @@ def draw_game():
     if enemy_rect.bottom <= 0: enemy_rect.top = WINDOW_HEIGHT
     screen.blit(enemy_surface, enemy_rect)
     screen.blit(player_surf, player_rect)
-
-    # Move and draw the projectiles
-    E1.move()
-    E1.draw(screen)
-    E2.move()
-    E2.draw(screen)
+     
+    
+    #player movement
     P1.movement()
+
+    # randomly generating projectiles
+    if wave == 1:
+        E1.move()
+        E1.draw(screen)
+        E2.move()
+        E2.draw(screen)    
+    elif wave == 2:
+        E2.move()
+        E2.draw(screen)    
+    elif wave == 3:
+        E1.move()
+        E1.draw(screen)
+        
+
+
 
 #function allowing for leaderboard to be displayed    
 def draw_leaderboard():
-    pass
+    screen.blit(Leaderboard_menu, (0, 0))
+    
+
+#defining the font at which is to be displayed aswell as size
+base_font = pygame.font.Font(None,32)
+
 
 # Main game loop
 while True:
     #checking for menu
     if main_menu:
         draw_menu()
+    elif leaderboard:
+        draw_leaderboard()
     else:
         draw_game()
 
@@ -149,18 +176,27 @@ while True:
             mouse_pos = event.pos
             if play_button_rect.collidepoint(mouse_pos):
                 main_menu = False
+                leaderboard = False
             elif quit_button_rect.collidepoint(mouse_pos):
                 pygame.quit()
                 exit()
             elif leaderboard_button_rect.collidepoint(mouse_pos):
-                leaderboardwindow = True
+                leaderboard = True
+                main_menu = False
+    
+    #creating a key that allows for the user to go back to menu anytime they want
+    if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:  
+                leaderboard = False
+                main_menu = True 
+
 
 
     #here we are coding the collisions betwen the player and projectiles
     if player_rect.colliderect(E1.rect) or player_rect.colliderect(E2.rect):
         lives = lives - 1
-        player_rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)  # Reset player position
-        pygame.time.delay(500)  # Brief pause after losing a life
+        player_rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
+        pygame.time.delay(500)  # pause after losing a life
         
 
     # Update score every second
@@ -170,6 +206,6 @@ while True:
 
     display_score(fontX, fontY)
 
-    # Update display and tick clock
+    # update display and clock ticks
     pygame.display.update()
     clock.tick(60)
